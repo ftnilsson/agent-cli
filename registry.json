@@ -5,10 +5,12 @@
     "frontend-only": ["development/*", "frontend/*"],
     "backend-only": ["development/*", "backend/*"],
     "unity": ["development/*", "game-dev/*"],
+    "godot": ["development/*", "godot-dev/*"],
     "nextjs": ["development/*", "frontend/*", "backend/*", "agents/nextjs"],
     "nestjs": ["development/*", "backend/*", "agents/nestjs"],
     "react": ["development/*", "frontend/*", "agents/react-spa"],
-    "unity-full": ["development/*", "game-dev/*", "agents/unity"]
+    "unity-full": ["development/*", "game-dev/*", "agents/unity"],
+    "godot-full": ["development/*", "godot-dev/*", "agents/godot"]
   },
   "categories": {
     "development": {
@@ -94,6 +96,35 @@
         "scene-review": "scene-review.md"
       }
     },
+    "godot-dev": {
+      "name": "Godot Development",
+      "description": "Godot 4 game development skills covering the full development lifecycle.",
+      "path": "godot-development/skills",
+      "skills": {
+        "project-setup": "01-project-setup",
+        "gdscript": "02-gdscript-fundamentals",
+        "scene-architecture": "03-scene-architecture",
+        "player-controller": "04-player-controller",
+        "physics": "05-physics-and-collision",
+        "input": "06-input-system",
+        "custom-resources": "07-custom-resources",
+        "ui": "08-ui-development",
+        "animation": "09-animation-system",
+        "audio": "10-audio-system",
+        "ai": "11-ai-and-navigation",
+        "shaders": "12-shaders-and-vfx",
+        "particles": "13-particle-systems",
+        "networking": "14-networking-multiplayer",
+        "performance": "15-performance-optimization",
+        "testing": "16-testing-and-debugging",
+        "export": "17-export-and-deployment"
+      },
+      "promptsPath": "godot-development/prompts",
+      "prompts": {
+        "performance-profile": "performance-profile.md",
+        "scene-review": "scene-review.md"
+      }
+    },
     "agents": {
       "name": "Agent Instructions",
       "description": "Curated agent instruction files that define behaviour, conventions, and workflow rules for specific tech stacks. Installed to project root.",
@@ -104,6 +135,7 @@
         "nestjs": "nestjs-api",
         "react-spa": "react-spa",
         "unity": "unity-gamedev",
+        "godot": "godot-gamedev",
         "typescript": "typescript-general"
       }
     }
