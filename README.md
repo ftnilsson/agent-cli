@@ -47,6 +47,26 @@ npm run build
 node dist/index.js <command>
 ```
 
+## Uninstall
+
+If installed globally with npm:
+
+```bash
+npm uninstall -g agent-cli
+```
+
+If linked from source with `npm link`:
+
+```bash
+npm unlink -g agent-cli
+```
+
+If `npm unlink -g agent-cli` fails with exit code `127`, your shell cannot find `npm`. Ensure Node.js is installed and available on `PATH`, then retry. If you use pnpm, run:
+
+```bash
+pnpm unlink -g agent-cli
+```
+
 ## Quick Start
 
 ```bash
@@ -137,6 +157,10 @@ agent add development/git
 agent add development/architecture agents/nextjs    # multiple at once
 agent add game-dev/*                                # entire category
 agent add agents/*                                  # all agent instructions
+
+# install multiple full categories
+agent add development/* aws-cloud/* serverless/*
+agent install
 ```
 
 Validates against the remote registry — typos are caught immediately.

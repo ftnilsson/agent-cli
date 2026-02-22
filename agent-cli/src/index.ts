@@ -415,10 +415,18 @@ function cmdList(args: string[]): void {
 
   if (remote) {
     const manifest = loadManifest();
-    const repoDir = cloneOrUpdate(manifest.source, manifest.ref);
+    const repoDir = cloneOrUpdate(manifest.source, "HEAD");
+    const latestRef = getLatestRef(repoDir);
     const registry = loadRegistry(repoDir);
 
-    console.log(`\nAvailable resources  (${manifest.source} @ ${c.cyan}${manifest.ref}${c.reset})\n`);
+    console.log(`\nAvailable resources  (${manifest.source} @ ${c.cyan}${latestRef}${c.reset})\n`);
+
+    if (manifest.ref !== latestRef) {
+      console.log(
+        `  ${icon.info} Your manifest is pinned to ${c.dim}${manifest.ref}${c.reset}. Run ${c.cyan}agent update${c.reset} to use the latest ref.`
+      );
+      console.log();
+    }
 
     for (const [catKey, cat] of Object.entries(registry.categories)) {
       const typeLabel = cat.type === "agent" ? ` ${icon.agent}` : ` ${icon.skill}`;

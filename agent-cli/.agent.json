@@ -1,0 +1,7 @@
+{
+  "source": "github:ftnilsson/agent-cli",
+  "ref": "5fcbcd7",
+  "outputDir": ".agent",
+  "include": [],
+  "agentOutput": "agent.md"
+}
