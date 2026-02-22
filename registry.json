@@ -12,7 +12,9 @@
     "unity-full": ["development/*", "game-dev/*", "agents/unity"],
     "godot-full": ["development/*", "godot-dev/*", "agents/godot"],
     "aws-cloud": ["development/*", "backend/*", "aws-cloud/*"],
-    "aws-fullstack": ["development/*", "frontend/*", "backend/*", "aws-cloud/*"]
+    "aws-fullstack": ["development/*", "frontend/*", "backend/*", "aws-cloud/*"],
+    "azure-cloud": ["development/*", "backend/*", "azure-cloud/*"],
+    "azure-fullstack": ["development/*", "frontend/*", "backend/*", "azure-cloud/*"]
   },
   "categories": {
     "development": {
@@ -144,6 +146,30 @@
         "cost": "10-cost-optimisation"
       },
       "promptsPath": "aws-cloud/prompts",
+      "prompts": {
+        "architecture-review": "architecture-review.md",
+        "security-audit": "security-audit.md",
+        "cost-review": "cost-review.md",
+        "iac-review": "iac-review.md"
+      }
+    },
+    "azure-cloud": {
+      "name": "Azure Cloud Development",
+      "description": "Azure cloud development skills covering architecture, compute, networking, storage, IaC, security, observability, CI/CD, messaging, and cost optimisation.",
+      "path": "azure-cloud/skills",
+      "skills": {
+        "architecture": "01-architecture-and-well-architected",
+        "compute": "02-compute-and-containers",
+        "networking": "03-networking-and-content-delivery",
+        "storage": "04-storage-and-databases",
+        "iac": "05-infrastructure-as-code",
+        "security": "06-security-and-identity",
+        "observability": "07-observability-and-monitoring",
+        "cicd": "08-cicd-and-devops",
+        "messaging": "09-messaging-and-event-driven",
+        "cost": "10-cost-optimisation"
+      },
+      "promptsPath": "azure-cloud/prompts",
       "prompts": {
         "architecture-review": "architecture-review.md",
         "security-audit": "security-audit.md",
