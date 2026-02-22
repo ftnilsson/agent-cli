@@ -515,8 +515,8 @@ function cmdAdd(args: string[]): void {
   }
 
   const categoryAliases: Record<string, string> = {
-    "cloud-aws": "aws-cloud",
-    "cloud-azure": "azure-cloud",
+    aws: "aws-cloud",
+    azure: "azure-cloud",
   };
 
   const normalizeCategoryKey = (categoryKey: string): string => {
@@ -665,8 +665,8 @@ function cmdPreset(args: string[]): void {
   }
 
   const categoryAliases: Record<string, string> = {
-    "cloud-aws": "aws-cloud",
-    "cloud-azure": "azure-cloud",
+    aws: "aws-cloud",
+    azure: "azure-cloud",
   };
 
   const normalizeCategoryKey = (categoryKey: string): string => {

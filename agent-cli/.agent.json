@@ -22,7 +22,17 @@
     "aws-cloud/observability",
     "aws-cloud/cicd",
     "aws-cloud/messaging",
-    "aws-cloud/cost"
+    "aws-cloud/cost",
+    "azure-cloud/architecture",
+    "azure-cloud/compute",
+    "azure-cloud/networking",
+    "azure-cloud/storage",
+    "azure-cloud/iac",
+    "azure-cloud/security",
+    "azure-cloud/observability",
+    "azure-cloud/cicd",
+    "azure-cloud/messaging",
+    "azure-cloud/cost"
   ],
   "agentOutput": "agent.md"
 }
