@@ -10,7 +10,9 @@
     "nestjs": ["development/*", "backend/*", "agents/nestjs"],
     "react": ["development/*", "frontend/*", "agents/react-spa"],
     "unity-full": ["development/*", "game-dev/*", "agents/unity"],
-    "godot-full": ["development/*", "godot-dev/*", "agents/godot"]
+    "godot-full": ["development/*", "godot-dev/*", "agents/godot"],
+    "aws-cloud": ["development/*", "backend/*", "aws-cloud/*"],
+    "aws-fullstack": ["development/*", "frontend/*", "backend/*", "aws-cloud/*"]
   },
   "categories": {
     "development": {
@@ -123,6 +125,30 @@
       "prompts": {
         "performance-profile": "performance-profile.md",
         "scene-review": "scene-review.md"
+      }
+    },
+    "aws-cloud": {
+      "name": "AWS Cloud Development",
+      "description": "AWS cloud development skills covering architecture, compute, networking, storage, IaC, security, observability, CI/CD, messaging, and cost optimisation.",
+      "path": "aws-cloud/skills",
+      "skills": {
+        "architecture": "01-architecture-and-well-architected",
+        "compute": "02-compute-and-containers",
+        "networking": "03-networking-and-content-delivery",
+        "storage": "04-storage-and-databases",
+        "iac": "05-infrastructure-as-code",
+        "security": "06-security-and-iam",
+        "observability": "07-observability-and-monitoring",
+        "cicd": "08-cicd-and-devops",
+        "messaging": "09-messaging-and-event-driven",
+        "cost": "10-cost-optimisation"
+      },
+      "promptsPath": "aws-cloud/prompts",
+      "prompts": {
+        "architecture-review": "architecture-review.md",
+        "security-audit": "security-audit.md",
+        "cost-review": "cost-review.md",
+        "iac-review": "iac-review.md"
       }
     },
     "agents": {
