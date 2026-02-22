@@ -14,7 +14,11 @@
     "aws-cloud": ["development/*", "backend/*", "aws-cloud/*"],
     "aws-fullstack": ["development/*", "frontend/*", "backend/*", "aws-cloud/*"],
     "azure-cloud": ["development/*", "backend/*", "azure-cloud/*"],
-    "azure-fullstack": ["development/*", "frontend/*", "backend/*", "azure-cloud/*"]
+    "azure-fullstack": ["development/*", "frontend/*", "backend/*", "azure-cloud/*"],
+    "serverless-aws": ["development/*", "backend/*", "serverless/*", "aws-cloud/*"],
+    "serverless-azure": ["development/*", "backend/*", "serverless/*", "azure-cloud/*"],
+    "serverless-fullstack-aws": ["development/*", "frontend/*", "backend/*", "serverless/*", "aws-cloud/*"],
+    "serverless-fullstack-azure": ["development/*", "frontend/*", "backend/*", "serverless/*", "azure-cloud/*"]
   },
   "categories": {
     "development": {
@@ -175,6 +179,30 @@
         "security-audit": "security-audit.md",
         "cost-review": "cost-review.md",
         "iac-review": "iac-review.md"
+      }
+    },
+    "serverless": {
+      "name": "Serverless Development",
+      "description": "Cloud-agnostic serverless computing skills — architecture, function design, API gateways, event-driven integration, data persistence, auth, testing, observability, performance, and deployment.",
+      "path": "serverless/skills",
+      "skills": {
+        "architecture": "01-architecture-and-design-patterns",
+        "functions": "02-function-design-and-composition",
+        "api-gateway": "03-api-gateway-and-http-apis",
+        "events": "04-event-driven-integration",
+        "data": "05-data-persistence-and-state",
+        "auth": "06-authentication-and-authorisation",
+        "testing": "07-testing-and-local-development",
+        "observability": "08-observability-and-debugging",
+        "performance": "09-performance-and-cold-starts",
+        "deployment": "10-deployment-and-versioning"
+      },
+      "promptsPath": "serverless/prompts",
+      "prompts": {
+        "architecture-review": "architecture-review.md",
+        "function-review": "function-review.md",
+        "performance-review": "performance-review.md",
+        "cost-review": "cost-review.md"
       }
     },
     "agents": {
