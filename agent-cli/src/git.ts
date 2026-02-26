@@ -42,13 +42,22 @@ export function cloneOrUpdate(source: string, ref: string): string {
   if (fs.existsSync(path.join(repoDir, ".git"))) {
     // Already cloned — fetch and checkout the requested ref
     exec("git fetch --all --tags --prune", repoDir);
-    exec(`git checkout ${ref}`, repoDir);
-    // If it's a branch, try to fast-forward
-    exec("git pull --ff-only 2>/dev/null || true", repoDir);
+
+    if (ref === "HEAD") {
+      const defaultBranch = getDefaultBranch(repoDir);
+      exec(`git checkout ${defaultBranch}`, repoDir);
+      exec(`git reset --hard origin/${defaultBranch}`, repoDir);
+    } else {
+      exec(`git checkout ${ref}`, repoDir);
+      // If it's a branch, try to fast-forward
+      exec("git pull --ff-only 2>/dev/null || true", repoDir);
+    }
   } else {
     fs.mkdirSync(CACHE_DIR, { recursive: true });
     exec(`git clone "${repoUrl}" "${repoDir}"`);
-    exec(`git checkout ${ref}`, repoDir);
+    if (ref !== "HEAD") {
+      exec(`git checkout ${ref}`, repoDir);
+    }
   }
 
   return repoDir;
@@ -101,4 +110,13 @@ function exec(command: string, cwd?: string): string {
     encoding: "utf-8",
     stdio: ["pipe", "pipe", "pipe"],
   });
+}
+
+function getDefaultBranch(repoDir: string): string {
+  const remoteHead = exec(
+    "git symbolic-ref --short refs/remotes/origin/HEAD",
+    repoDir,
+  ).trim();
+
+  return remoteHead.replace(/^origin\//, "");
 }
