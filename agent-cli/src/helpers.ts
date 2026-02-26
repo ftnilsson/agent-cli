@@ -110,6 +110,22 @@ export function findAgentFile(dir: string): string | null {
 }
 
 /**
+ * Find the skill.md file inside a directory.
+ */
+export function findSkillFile(dir: string): string | null {
+  if (!fs.existsSync(dir)) return null;
+
+  // Look for skill.md (primary) or any .md file
+  const skillMd = path.join(dir, "skill.md");
+  if (fs.existsSync(skillMd)) return skillMd;
+
+  // Fallback: first .md file found
+  const entries = fs.readdirSync(dir);
+  const md = entries.find((e) => e.endsWith(".md"));
+  return md ? path.join(dir, md) : null;
+}
+
+/**
  * Recursively compare two directories for differences.
  */
 export function hasDifferences(srcDir: string, destDir: string): boolean {

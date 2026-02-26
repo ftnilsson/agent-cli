@@ -17,6 +17,7 @@ import {
   composeAgentFile,
   resolveIncludes,
   findAgentFile,
+  findSkillFile,
   hasDifferences,
   findMissingGitignoreEntries,
   generateSkillsIndexContent,
@@ -297,7 +298,9 @@ function cmdInstall(args: string[]): void {
   // 3. Resolve each include entry, separating skills from agents
   const { skills, agents } = resolveIncludes(manifest.include, registry);
 
-  // 4. Install skills into output directory
+  // 4. Install skills into output directory and collect content for composition
+  const skillSections: string[] = [];
+
   if (skills.length > 0) {
     const outRoot = path.resolve(manifest.outputDir);
     if (fs.existsSync(outRoot)) {
@@ -316,15 +319,22 @@ function cmdInstall(args: string[]): void {
 
       copyDir(src, dest);
       console.log(`  ${icon.success}  ${key} ${icon.arrow} ${path.relative(process.cwd(), dest)}`);
+
+      // Collect skill content for composition into the agent output file
+      const skillFile = findSkillFile(src);
+      if (skillFile) {
+        const content = fs.readFileSync(skillFile, "utf-8").trim();
+        skillSections.push(content);
+      }
     }
 
     generateSkillsIndex(outRoot, skills);
     console.log(`\n  ${icon.install} Installed ${c.bold}${skills.length}${c.reset} skill(s) into ${c.cyan}${manifest.outputDir}/${c.reset}`);
   }
 
-  // 5. Compose agent instructions into a single file
-  if (agents.length > 0) {
-    const sections: string[] = [];
+  // 5. Compose skills + agent instructions into a single output file
+  if (skills.length > 0 || agents.length > 0) {
+    const sections: string[] = [...skillSections];
 
     for (const { key, srcPath } of agents) {
       const src = path.join(repoDir, srcPath);
@@ -358,7 +368,8 @@ function cmdInstall(args: string[]): void {
       fs.mkdirSync(path.dirname(outputPath), { recursive: true });
       fs.writeFileSync(outputPath, composed);
 
-      console.log(`\n  ${icon.compose} Composed ${c.bold}${sections.length}${c.reset} agent instruction(s) into ${c.cyan}${agentOutputPath}${c.reset}`);
+      const totalCount = skills.length + agents.length;
+      console.log(`\n  ${icon.compose} Composed ${c.bold}${totalCount}${c.reset} item(s) into ${c.cyan}${agentOutputPath}${c.reset}`);
     }
   }
 
@@ -396,9 +407,10 @@ function cmdInstall(args: string[]): void {
     console.log(`\n  ${icon.prompt} Installed ${c.bold}${promptCount}${c.reset} prompt(s) into ${c.cyan}${path.relative(process.cwd(), promptsOutDir)}/${c.reset}`);
   }
 
-  // 7. .gitignore guard
+  // 7. .gitignore guard — only guard the raw downloads cache (outputDir),
+  //    not the composed agent output file (which should be committed and shared)
   if (!skipGitignore) {
-    checkGitignore(manifest.outputDir, agentOutputPath);
+    checkGitignore(manifest.outputDir);
   } else {
     console.log(`\n  ${icon.info} Skipping .gitignore check ${c.dim}(--no-gitignore)${c.reset}`);
   }
@@ -515,8 +527,8 @@ function cmdAdd(args: string[]): void {
   }
 
   const categoryAliases: Record<string, string> = {
-    "cloud-aws": "aws-cloud",
-    "cloud-azure": "azure-cloud",
+    aws: "aws-cloud",
+    azure: "azure-cloud",
   };
 
   const normalizeCategoryKey = (categoryKey: string): string => {
@@ -665,8 +677,8 @@ function cmdPreset(args: string[]): void {
   }
 
   const categoryAliases: Record<string, string> = {
-    "cloud-aws": "aws-cloud",
-    "cloud-azure": "azure-cloud",
+    aws: "aws-cloud",
+    azure: "azure-cloud",
   };
 
   const normalizeCategoryKey = (categoryKey: string): string => {
@@ -820,14 +832,25 @@ function cmdDiff(args: string[]): void {
     }
   }
 
-  // ── Agent instructions diff ──
-  if (agents.length > 0) {
+  // ── Composed output (skills + agent instructions) diff ──
+  if (skills.length > 0 || agents.length > 0) {
     const outputPath = path.resolve(agentOutputPath);
     if (!fs.existsSync(outputPath)) {
-      console.log(`  ${c.green}+${c.reset}  ${agentOutputPath}  ${c.dim}(new agent instructions)${c.reset}`);
+      console.log(`  ${c.green}+${c.reset}  ${agentOutputPath}  ${c.dim}(new \u2014 will be created)${c.reset}`);
       changes++;
     } else {
       const sections: string[] = [];
+
+      // Collect skill content
+      for (const { srcPath } of skills) {
+        const src = path.join(repoDir, srcPath);
+        const skillFile = findSkillFile(src);
+        if (skillFile) {
+          sections.push(fs.readFileSync(skillFile, "utf-8").trim());
+        }
+      }
+
+      // Collect agent instruction content
       for (const { srcPath } of agents) {
         const src = path.join(repoDir, srcPath);
         const agentFile = findAgentFile(src);
@@ -835,17 +858,19 @@ function cmdDiff(args: string[]): void {
           sections.push(fs.readFileSync(agentFile, "utf-8").trim());
         }
       }
+
       // Include local overrides in comparison
       const localPath = path.resolve(LOCAL_INSTRUCTIONS_FILE);
       if (fs.existsSync(localPath)) {
         const local = fs.readFileSync(localPath, "utf-8").trim();
         if (local) sections.push(local);
       }
+
       if (sections.length > 0) {
         const newContent = composeAgentFile(sections);
         const currentContent = fs.readFileSync(outputPath, "utf-8");
         if (newContent !== currentContent) {
-          console.log(`  ${c.yellow}~${c.reset}  ${agentOutputPath}  ${c.dim}(agent instructions modified)${c.reset}`);
+          console.log(`  ${c.yellow}~${c.reset}  ${agentOutputPath}  ${c.dim}(instructions modified)${c.reset}`);
           changes++;
         } else {
           console.log(`  ${c.dim}=${c.reset}  ${agentOutputPath}  ${c.dim}(unchanged)${c.reset}`);
@@ -1103,7 +1128,7 @@ function generateSkillsIndex(outRoot: string, resolved: ResolvedEntry[]): void {
 /**
  * Check that generated outputs are listed in .gitignore and warn if not.
  */
-function checkGitignore(outputDir: string, agentOutputPath: string): void {
+function checkGitignore(outputDir: string): void {
   const gitignorePath = path.resolve(".gitignore");
 
   // Only check if we're in a git repo
@@ -1114,7 +1139,7 @@ function checkGitignore(outputDir: string, agentOutputPath: string): void {
     : null;
 
   const missing = findMissingGitignoreEntries(
-    [outputDir, agentOutputPath],
+    [outputDir],
     gitignoreContent,
   );
 

@@ -9,6 +9,7 @@ import {
   composeAgentFile,
   resolveIncludes,
   findAgentFile,
+  findSkillFile,
   hasDifferences,
   findMissingGitignoreEntries,
   generateSkillsIndexContent,
@@ -224,6 +225,49 @@ describe("findAgentFile", () => {
     fs.writeFileSync(path.join(tmpDir, "readme.txt"), "text file");
 
     assert.equal(findAgentFile(tmpDir), null);
+  });
+});
+
+// ─── findSkillFile ────────────────────────────────────────────────────────────
+
+describe("findSkillFile", () => {
+  let tmpDir: string;
+
+  beforeEach(() => {
+    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "skill-test-"));
+  });
+
+  afterEach(() => {
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
+
+  it("returns null for non-existent directory", () => {
+    assert.equal(findSkillFile("/nonexistent/path"), null);
+  });
+
+  it("finds skill.md as the primary file", () => {
+    fs.writeFileSync(path.join(tmpDir, "skill.md"), "# Skill");
+    fs.writeFileSync(path.join(tmpDir, "other.md"), "# Other");
+
+    const result = findSkillFile(tmpDir);
+    assert.equal(result, path.join(tmpDir, "skill.md"));
+  });
+
+  it("falls back to first .md file when no skill.md", () => {
+    fs.writeFileSync(path.join(tmpDir, "content.md"), "# Content");
+
+    const result = findSkillFile(tmpDir);
+    assert.equal(result, path.join(tmpDir, "content.md"));
+  });
+
+  it("returns null for empty directory", () => {
+    assert.equal(findSkillFile(tmpDir), null);
+  });
+
+  it("returns null for directory with no .md files", () => {
+    fs.writeFileSync(path.join(tmpDir, "readme.txt"), "text file");
+
+    assert.equal(findSkillFile(tmpDir), null);
   });
 });
 
