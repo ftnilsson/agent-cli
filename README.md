@@ -142,6 +142,8 @@ Remote listing marks included entries with `●` and available ones with `○`.
 
 `--remote` always reads the latest registry from HEAD. If your manifest ref is behind, you will see a note suggesting `agent update`.
 
+`--remote` always reads the latest registry from HEAD. If your manifest ref is behind, you will see a note suggesting `agent update`.
+
 ### `agent update`
 
 Fetch the latest ref (tag or commit) from the source repo and update `.agent.json`.
@@ -197,7 +199,6 @@ agent preset serverless-aws    # apply the serverless + AWS preset
 ```
 
 Presets are resolved against the latest remote registry. If your manifest ref is behind, it is updated automatically.
-
 
 ### `agent diff`
 
